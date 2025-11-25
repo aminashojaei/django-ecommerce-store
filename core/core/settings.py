@@ -16,7 +16,6 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -144,3 +143,17 @@ EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool, default=False)
 EMAIL_PORT = config("EMAIL_PORT", cast=int, default=25)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD",default="")
+
+
+SHOW_DEBUGGER_TOOLBAR = config("SHOW_DEBUGGER_TOOLBAR", cast=bool, default=False)
+if SHOW_DEBUGGER_TOOLBAR:
+    INSTALLED_APPS += [
+        "debug_toolbar",
+    ]
+    MIDDLEWARE+= [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+
+    ]
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostbyname)
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
